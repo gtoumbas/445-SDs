@@ -25,14 +25,3 @@ public interface Student {
       List<Double> synergies);
 }
 
-
-public int[] getApplications(
-      int N,
-      double S,
-      double T,
-      double W,
-      double aptitude,
-      List<Double> schools,
-      List<Double> synergies) {
-
-      }
