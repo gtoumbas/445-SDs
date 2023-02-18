@@ -61,7 +61,7 @@ public class Student_gtoumbas implements Student {
         List<Double> synergies) {
 
         double K = averageNumStudentsAbove(N, S, T, W, aptitude, schools, synergies);
-        double kStar = (T / (T + W)) * (1 + (W / (T + W))) * K;
+        double kStar = (T / (T + W)) * (1) + (W / (T + W)) * K;
         return kStar;
     }
 
