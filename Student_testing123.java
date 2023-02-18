@@ -71,13 +71,13 @@ public class Student_testing123 implements Student {
         double T,
         double W,
         double aptitude,
-        List<Double> schools,
+        double[] schools,
         List<Double> synergies) {
 
-        double[] schoolScores = new double[schools.size()];
-        for (int i = 0; i < schools.size(); i++) {
-            double studsAbove = expectedNumStudentsAbove(N, S, T, W, aptitude, schools.get(i), synergies.get(i));
-            schoolScores[i] = (N-i)/((W / (T + W)) * (1) + (T / (T + W)) * studsAbove);//(schools.size()-i)*(1-studsAbove/N);
+        double[] schoolScores = new double[N];
+        for (int i = 0; i < N; i++) {
+            double studsAbove = expectedNumStudentsAbove(N, S, T, W, aptitude, schools[i], synergies.get(i));
+            schoolScores[i] = (N-i)*(1-studsAbove/N);//(N-i)/((W / (T + W)) * (1) + (T / (T + W)) * studsAbove);
         }
         return schoolScores;
     }
@@ -106,10 +106,13 @@ public class Student_testing123 implements Student {
         }
         return ret;
         }
-
+        double[] truePrefArray = new double[schools.size()];
+        for (int i = 0; i != schools.size(); ++i) {
+            truePrefArray[i] = truePrefs[i].quality;
+        }
         // Computer K*
         double[] studScores = new double[schools.size()];
-        studScores = strategyScores(N, S, T, W, aptitude, schools, synergies);
+        studScores = strategyScores(N, S, T, W, aptitude, truePrefArray, synergies);
         for (int i = 0; i != synergies.size(); ++i) {
         scorePrefs[i] = new School(i, studScores[i]);
         }
