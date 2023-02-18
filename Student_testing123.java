@@ -5,7 +5,7 @@
 import java.util.Arrays;
 import java.util.List;
 
-public class Student_qaz123 implements Student {
+public class Student_testing123 implements Student {
   private class School implements Comparable<School> {
     public School(int i, double q) {
       index = i;
@@ -77,7 +77,7 @@ public class Student_qaz123 implements Student {
         double[] schoolScores = new double[schools.size()];
         for (int i = 0; i < schools.size(); i++) {
             double studsAbove = expectedNumStudentsAbove(N, S, T, W, aptitude, schools.get(i), synergies.get(i));
-            schoolScores[i] = (schools.size()-i)*(1-studsAbove/N);
+            schoolScores[i] = (N-i)/((W / (T + W)) * (1) + (T / (T + W)) * studsAbove);//(schools.size()-i)*(1-studsAbove/N);
         }
         return schoolScores;
     }
