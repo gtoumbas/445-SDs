@@ -81,7 +81,7 @@ public class Student_multi_strat implements Student {
         }
         Arrays.sort(truePrefs);
         int[] ret = new int[10];
-        double diffInSize = 1.8;
+        double threshold = 0.5;
 
 
         // Case where N = 10, return top 10 schools
@@ -96,11 +96,11 @@ public class Student_multi_strat implements Student {
         int startingIndex = 0;
 
         // If W > T*diffInSize, just use K as index
-        if (W > T*diffInSize) {
+        if (W / T < threshold) { 
         double K = strategyScore(N, S, T, W, aptitude, schools, synergies);
         startingIndex = (int) K;
         }
-        else if (T > W*diffInSize) { // Use K = 1 as index
+        else if (T / W < threshold) { // If T > W*diffInSize, just use K* as index
         startingIndex = 1;
         }
         else { // Compute weighted kStar
