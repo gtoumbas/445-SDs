@@ -29,6 +29,7 @@ public class Student_gtoumbas implements Student {
         double aptitude,
         double school_quality,
         double synergy) {
+
         double r_u = (aptitude + synergy) / (S + W);
         double K = ((1 - r_u) * N);
         return K;
@@ -42,6 +43,7 @@ public class Student_gtoumbas implements Student {
         double aptitude,
         List<Double> schools,
         List<Double> synergies) {
+
         double total = 0;
         for (int i = 0; i < schools.size(); i++) {
             total += expectedNumStudentsAbove(N, S, T, W, aptitude, schools.get(i), synergies.get(i));
@@ -57,6 +59,7 @@ public class Student_gtoumbas implements Student {
         double aptitude,
         List<Double> schools,
         List<Double> synergies) {
+
         double K = averageNumStudentsAbove(N, S, T, W, aptitude, schools, synergies);
         double k_star = (T / (T + W)) * (1 + (W / (T + W))) * K;
         return k_star;
@@ -70,6 +73,7 @@ public class Student_gtoumbas implements Student {
         double aptitude,
         List<Double> schools,
         List<Double> synergies) {
+          
         School[] true_prefs = new School[schools.size()];
         for (int i = 0; i != synergies.size(); ++i) {
         true_prefs[i] = new School(i, schools.get(i) + synergies.get(i));
