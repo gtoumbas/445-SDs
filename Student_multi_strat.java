@@ -129,8 +129,8 @@ public class Student_multi_strat implements Student {
         else { // Compute weighted kStar
             double kStar = strategyScore(N, S, T, W, aptitude, schools, synergies);
             startingIndex = (int) kStar;
-            // Try to be more aggresive
-            double howAggressive = 0.25;
+            // Try to be more aggresive, % more aggresive
+            double howAggressive = 0.20;
             int aggresiveIndex = (int) (startingIndex - (N * howAggressive));
 
             if (aggresiveIndex > 0) {
