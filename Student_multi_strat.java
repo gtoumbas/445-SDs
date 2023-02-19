@@ -99,7 +99,7 @@ public class Student_multi_strat implements Student {
         }
         Arrays.sort(truePrefs);
         int[] ret = new int[10];
-        double threshold = 0.0;
+        double threshold = 0.0; // Just skipping thresholding, performs better
         // Print out the true preferences
         // for (int i = 0; i != truePrefs.length; ++i) {
         // System.out.println(truePrefs[i].index + " " + truePrefs[i].quality);
