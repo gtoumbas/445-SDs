@@ -130,12 +130,18 @@ public class Student_multi_strat implements Student {
             double kStar = strategyScore(N, S, T, W, aptitude, schools, synergies);
             startingIndex = (int) kStar;
             // Try to be more aggresive
-            // If we can, decrease startingIndex by 5
-            // I think this is doing better because other people on the leaderboard
-            // are being conservative, as they don't want to get zero points
-            if(startingIndex + 10 < N-4){
-                startingIndex -= 5;
+            double howAggressive = 0.05; // 5% more aggressive
+            int aggresiveIndex = (int) (startingIndex - (N * howAggressive));
+
+            if (aggresiveIndex > 0) {
+                startingIndex = aggresiveIndex;
             }
+
+            // if(startingIndex + 10 < N-4){
+            //     // Print N
+            //     System.out.println("N: " + N);
+            //     startingIndex -= 5;
+            // }
         }
         
         // Check if K* + 10 > N
