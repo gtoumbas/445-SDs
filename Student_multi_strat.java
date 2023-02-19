@@ -61,8 +61,26 @@ public class Student_multi_strat implements Student {
         List<Double> synergies) {
 
         double K = averageNumStudentsAbove(N, S, T, W, aptitude, schools, synergies);
-        double kStar = (T / (T + W)) * (1) + (W / (T + W)) * K;
+        double kStar = (W / (T + W)) * (1) + (T / (T + W)) * K;
         return kStar;
+    }
+
+    public static double[] strategyScores(
+            int N,
+            double S,
+            double T,
+            double W,
+            double aptitude,
+            double[] schoolsTruePref,
+            List<Double> synergies) {
+
+        double[] schoolScores = new double[N];
+        for (int i = 0; i < N; i++) {
+            double studsAbove = expectedNumStudentsAbove(N, S, T, W, aptitude, schoolsTruePref[i], synergies.get(i));
+            double chances = (W / (T + W)) * (1 / N) + (T / (T + W)) * (studsAbove / N);// studsAbove/N
+            schoolScores[i] = (N - i) * (1 - chances);
+        }
+        return schoolScores;
     }
 
     public int[] getApplications(
@@ -81,7 +99,12 @@ public class Student_multi_strat implements Student {
         }
         Arrays.sort(truePrefs);
         int[] ret = new int[10];
-        double threshold = 0.8;
+        double threshold = 0.0;
+        // Print out the true preferences
+        // for (int i = 0; i != truePrefs.length; ++i) {
+        // System.out.println(truePrefs[i].index + " " + truePrefs[i].quality);
+        // }
+        
 
 
         // Case where N = 10, return top 10 schools
@@ -95,17 +118,24 @@ public class Student_multi_strat implements Student {
 
         int startingIndex = 0;
 
-        // If W > T*diffInSize, just use K as index
-        if (T / W < threshold) { 
+        // T is more dominant, use K
+        if ((W / T) < threshold) { 
         double K = averageNumStudentsAbove(N, S, T, W, aptitude, schools, synergies);
         startingIndex = (int) K;
         }
-        else if (W / T < threshold) { // If T > W*diffInSize, just use K* as index
+        else if ((T / W) < threshold) { // W is more dominant, use 1
         startingIndex = 1;
         }
         else { // Compute weighted kStar
             double kStar = strategyScore(N, S, T, W, aptitude, schools, synergies);
             startingIndex = (int) kStar;
+            // Try to be more aggresive
+            // If we can, decrease startingIndex by 5
+            // I think this is doing better because other people on the leaderboard
+            // are being conservative, as they don't want to get zero points
+            if(startingIndex + 10 < N-4){
+                startingIndex -= 5;
+            }
         }
         
         // Check if K* + 10 > N
