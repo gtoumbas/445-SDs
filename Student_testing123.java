@@ -71,13 +71,14 @@ public class Student_testing123 implements Student {
         double T,
         double W,
         double aptitude,
-        double[] schools,
+        double[] schoolsTruePref,
         List<Double> synergies) {
 
         double[] schoolScores = new double[N];
         for (int i = 0; i < N; i++) {
-            double studsAbove = expectedNumStudentsAbove(N, S, T, W, aptitude, schools[i], synergies.get(i));
-            schoolScores[i] = (N-i)*(1-studsAbove/N);//(N-i)/((W / (T + W)) * (1) + (T / (T + W)) * studsAbove);
+            double studsAbove = expectedNumStudentsAbove(N, S, T, W, aptitude, schoolsTruePref[i], synergies.get(i));
+            double chances = (W / (T + W)) * (1/N) + (T / (T + W)) * (studsAbove/N);//studsAbove/N
+            schoolScores[i] = (N-i)*(1-chances);
         }
         return schoolScores;
     }
@@ -100,50 +101,62 @@ public class Student_testing123 implements Student {
         int[] ret = new int[10];
 
         // Case where N = 10, return top 10 schools
-        if (N == 10) {
-        for (int i = 0; i != 10; ++i) {
-            ret[i] = truePrefs[i].index;
-        }
-        return ret;
+        if (N <= 10) {
+            for (int i = 0; i != N; ++i) {
+                ret[i] = truePrefs[i].index;
+            }
+            return ret;
         }
         double[] truePrefArray = new double[schools.size()];
-        for (int i = 0; i != schools.size(); ++i) {
+        for (int i = 0; i != N; ++i) {
             truePrefArray[i] = truePrefs[i].quality;
         }
         // Computer K*
-        double[] studScores = new double[schools.size()];
-        studScores = strategyScores(N, S, T, W, aptitude, truePrefArray, synergies);
-        for (int i = 0; i != synergies.size(); ++i) {
-        scorePrefs[i] = new School(i, studScores[i]);
+        double[] schoolScores = new double[schools.size()];
+        schoolScores = strategyScores(N, S, T, W, aptitude, truePrefArray, synergies);
+        for (int i = 0; i != N; ++i) {
+            scorePrefs[i] = new School(truePrefs[i].index, schoolScores[i]);
         }
         Arrays.sort(scorePrefs);
+        
         int[] top10 = new int[10];
         for (int i = 0; i != 10; ++i) {
             top10[i] = scorePrefs[i].index;
         }
-        
-        int idx = 0;
-        for (int i = 0; i != schools.size(); ++i) {
-            if (Arrays.asList(top10).contains(truePrefs[i].index)) {
-                ret[idx] = truePrefs[i].index;
-                idx+=1;
+
+        int ind = 0; 
+        for (int i = 0; i != N; ++i) {
+            if (top10[0]==truePrefs[i].index) {
+                //ret[idx] = truePrefs[i].index;
+                ind = i;
+                break;
             }
         }
-        return top10;
 
-        // // Check if K* + 10 > N
-        // // If so, return last 10 schools
-        // if (kStar + 10 > N) {
-        // for (int i = 0; i != 10; ++i) {
-        //     ret[i] = truePrefs[truePrefs.length - 1 - i].index;
+        if (ind + 10 > N) {
+            for (int i = 0; i != 10; ++i) {
+                ret[i] = truePrefs[truePrefs.length - 1 - i].index;
+            }
+        }
+        else{
+            for (int i = 0; i != 10; ++i) {
+                ret[i] = truePrefs[ind + i].index;
+            }
+        }
+        // int idx = 0;
+        // for (int i = 0; i != N; ++i) {
+        //     if (Arrays.asList(top10).contains(truePrefs[i].index)) {
+        //         ret[idx] = truePrefs[i].index;
+        //         idx+=1;
+        //     }
         // }
-        // return ret;
-        // }
+        return ret;
+
+        // Check if K* + 10 > N
+        // If so, return last 10 schools
+        
 
         // // Otherwise, return K - K* + 10 schools
-        // for (int i = 0; i != 10; ++i) {
-        // ret[i] = truePrefs[(int) kStar + i].index;
-        // }
-        // return ret;
+       
     }
 }
