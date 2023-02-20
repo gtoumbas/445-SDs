@@ -1,6 +1,8 @@
-// Student_holist.java: sample implementation for Student
-// COS 445 HW1, Spring 2018
-// Created by Andrew Wonnacott
+// Created By Viraj Nadkarni, Harpreet Kaur, and George Toumbas
+// Uses code from Student_holist.java
+//  Student_holist.java: sample implementation for Student
+//  COS 445 HW1, Spring 2018
+//  Created by Andrew Wonnacott
 
 import java.util.Arrays;
 import java.util.List;
@@ -21,10 +23,10 @@ public class Student_gtoumbas implements Student {
     }
   }
 
-    public static double expectedNumStudentsAbove(
+    // Number of students that a university is expected to prefer
+    public static double getExpNumStudentsAbove(
         int N,
         double S,
-        double T,
         double W,
         double aptitude,
         double school_quality,
@@ -35,10 +37,10 @@ public class Student_gtoumbas implements Student {
         return K;
     }
 
-    public static double averageNumStudentsAbove(
+    // Average number of expected preferred students across all universities
+    public static double getAvgNumStudentsAbove(
         int N,
         double S,
-        double T,
         double W,
         double aptitude,
         List<Double> schools,
@@ -46,12 +48,13 @@ public class Student_gtoumbas implements Student {
 
         double total = 0;
         for (int i = 0; i < schools.size(); i++) {
-            total += expectedNumStudentsAbove(N, S, T, W, aptitude, schools.get(i), synergies.get(i));
+            total += getExpNumStudentsAbove(N, S, W, aptitude, schools.get(i), synergies.get(i));
         }
         return total / schools.size();
     }
 
-    public static double strategyScore(
+    // Gets starting index for 10 schools to apply to
+    public static double getStartingIndex(
         int N,
         double S,
         double T,
@@ -60,8 +63,8 @@ public class Student_gtoumbas implements Student {
         List<Double> schools,
         List<Double> synergies) {
 
-        double K = averageNumStudentsAbove(N, S, T, W, aptitude, schools, synergies);
-        double kStar = (T / (T + W)) * (1) + (W / (T + W)) * K;
+        double avgK = getAvgNumStudentsAbove(N, S, W, aptitude, schools, synergies);
+        double kStar = (W / (T + W)) * (1) + (T / (T + W)) * avgK;
         return kStar;
     }
 
@@ -75,35 +78,39 @@ public class Student_gtoumbas implements Student {
         List<Double> synergies) {
           
         School[] truePrefs = new School[schools.size()];
+        int[] ret = new int[10];
+        double howAggressive = 0.20; // 20% lower starting index if possible
         for (int i = 0; i != synergies.size(); ++i) {
-        truePrefs[i] = new School(i, schools.get(i) + synergies.get(i));
+            truePrefs[i] = new School(i, schools.get(i) + synergies.get(i));
         }
         Arrays.sort(truePrefs);
-        int[] ret = new int[10];
 
         // Case where N = 10, return top 10 schools
         if (N == 10) {
-        for (int i = 0; i != 10; ++i) {
-            ret[i] = truePrefs[i].index;
-        }
-        return ret;
+            for (int i = 0; i != 10; ++i) {
+                ret[i] = truePrefs[i].index;
+            }
+            return ret;
         }
 
-        // Computer K*
-        double kStar = strategyScore(N, S, T, W, aptitude, schools, synergies);
+        int startingIndex = (int) getStartingIndex(N, S, T, W, aptitude, schools, synergies);
+        int aggresiveIndex = (int) (startingIndex - (N * howAggressive));
+        if (aggresiveIndex > 0) {
+            startingIndex = aggresiveIndex;
+        }
 
         // Check if K* + 10 > N
         // If so, return last 10 schools
-        if (kStar + 10 > N) {
-        for (int i = 0; i != 10; ++i) {
-            ret[i] = truePrefs[truePrefs.length - 1 - i].index;
-        }
-        return ret;
+        if (startingIndex + 10 > N) {
+            for (int i = 0; i != 10; ++i) {
+                ret[i] = truePrefs[truePrefs.length - 1 - i].index;
+            }
+            return ret;
         }
 
-        // Otherwise, return K - K* + 10 schools
+        // Otherwise, return startingIndex to startingIndex + 10
         for (int i = 0; i != 10; ++i) {
-        ret[i] = truePrefs[(int) kStar + i].index;
+            ret[i] = truePrefs[startingIndex + i].index;
         }
         return ret;
     }
